@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    sh 'docker build -t $DOCKER_IMAGE .'  // Construir imagen
+                    bat 'docker build -t %DOCKER_IMAGE% .'  // Construir imagen en Windows
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Docker container...'
-                    sh 'docker run -d --name $CONTAINER_NAME -p 8000:8000 $DOCKER_IMAGE'  // Iniciar contenedor
+                    bat 'docker run -d --name %CONTAINER_NAME% -p 8000:8000 %DOCKER_IMAGE%'  // Iniciar contenedor en Windows
                 }
             }
         }
@@ -37,9 +37,9 @@ pipeline {
         // 4. Run Tests: Ejecutar los tests en el contenedor
         stage('Run Pytest') {
             steps {
-            script {
-            echo 'Running Pytest...'
-            sh 'docker exec pokeapi-container /app/venv/bin/pytest tests/'
+                script {
+                    echo 'Running Pytest...'
+                    bat 'docker exec %CONTAINER_NAME% /app/venv/Scripts/pytest tests/'  // Ejecutar pytest en Windows
                 }
             }
         }
@@ -49,8 +49,8 @@ pipeline {
             steps {
                 script {
                     echo 'Stopping Docker container...'
-                    sh 'docker stop $CONTAINER_NAME'  // Detener contenedor
-                    sh 'docker rm $CONTAINER_NAME'  // Remover contenedor
+                    bat 'docker stop %CONTAINER_NAME%'  // Detener contenedor en Windows
+                    bat 'docker rm %CONTAINER_NAME%'  // Remover contenedor en Windows
                 }
             }
         }
@@ -59,7 +59,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning up Docker containers and images...'
-            sh 'docker system prune -f'  // Limpiar imágenes no usadas
+            bat 'docker system prune -f'  // Limpiar imágenes no usadas en Windows
         }
         success {
             echo 'Pipeline completed successfully.'  // Si la ejecución es exitosa
