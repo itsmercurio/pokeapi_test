@@ -10,7 +10,7 @@ pipeline {
         // 1. Checkout: Obtener el código del repositorio
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Jillazquez/pokeApi.git', branch: 'main'  // Clonar el repositorio
+                git url: 'https://github.com/itsmercurio/pokeapi_test', branch: 'main'  // Clonar el repositorio
             }
         }
 
