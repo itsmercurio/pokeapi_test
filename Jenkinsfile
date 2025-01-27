@@ -1,6 +1,6 @@
 pipeline {
     agent any  // Usar cualquier agente disponible de Jenkins
-    
+
     environment {
         DOCKER_IMAGE = 'pokeapi-app:latest'  // Nombre para la imagen Docker
         CONTAINER_NAME = 'pokeapi-container'  // Nombre para el contenedor Docker
@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    bat 'docker build -t %DOCKER_IMAGE% .'  // Construir imagen en Windows
+                    bat 'docker build -t %DOCKER_IMAGE% .'  // Construir imagen
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Docker container...'
-                    bat 'docker run -d --name %CONTAINER_NAME% -p 8000:8000 %DOCKER_IMAGE%'  // Iniciar contenedor en Windows
+                    bat 'docker run -d --name %CONTAINER_NAME% -p 8000:8000 %DOCKER_IMAGE%'  // Iniciar contenedor
                 }
             }
         }
@@ -39,28 +39,13 @@ pipeline {
             steps {
                 script {
                     echo 'Running Pytest...'
-                    bat 'docker exec %CONTAINER_NAME% /app/venv/Scripts/pytest tests/'  // Ejecutar pytest en Windows
-                }
-            }
-        }
-
-        // 5. Stop Docker Container: Detener y remover el contenedor
-        stage('Stop Docker Container') {
-            steps {
-                script {
-                    echo 'Stopping Docker container...'
-                    bat 'docker stop %CONTAINER_NAME%'  // Detener contenedor en Windows
-                    bat 'docker rm %CONTAINER_NAME%'  // Remover contenedor en Windows
+                    bat 'docker exec %CONTAINER_NAME% /app/venv/Scripts/pytest tests/'  // Ejecutar pytest
                 }
             }
         }
     }
 
     post {
-        always {
-            echo 'Cleaning up Docker containers and images...'
-            bat 'docker system prune -f'  // Limpiar imágenes no usadas en Windows
-        }
         success {
             echo 'Pipeline completed successfully.'  // Si la ejecución es exitosa
         }
